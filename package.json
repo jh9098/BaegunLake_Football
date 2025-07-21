@@ -1,6 +1,6 @@
 {
   "name": "soccer-club",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,22 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-router-dom": "^6.25.0",
-    "zustand": "^4.5.0",
-    "phosphor-react": "^2.1.0",
-    "dayjs": "^1.11.11"
+    "axios": "^1.7.0",
+    "phosphor-react": "^2.1.5",
+    "react": "^18.3.1",
+    "react-big-calendar": "^1.12.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0",
+    "zustand": "^4.5.2",
+    "date-fns": "^3.6.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.4.0",
-    "tailwindcss": "^4.0.0",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
+    "@shadcn/ui": "^0.9.2",
+    "@types/react-big-calendar": "^0.38.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.34",
+    "tailwindcss": "^4.0.2",
     "vite": "^5.2.0",
-    "vite-plugin-pwa": "^0.18.0",
-    "typescript": "^5.4.0"
+    "vite-imagetools": "^8.0.3",
+    "vite-plugin-pwa": "^0.18.0"
   }
 }
