@@ -1,7 +1,7 @@
 // src/components/Navbar.tsx
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useClub } from "@/app/store";
-import { SoccerBall, UserCircle, SignOut, SignIn } from "@phosphor-icons/react";
+import { SoccerBall, UserCircle, SignOut, SignIn, List } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -53,6 +53,23 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+        </div>
+
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <List className="size-6" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {links.map(link => (
+                <DropdownMenuItem asChild key={link.to}>
+                  <Link to={link.to}>{link.label}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="ml-auto flex items-center gap-4">
