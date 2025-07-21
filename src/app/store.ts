@@ -11,6 +11,8 @@ export interface Child {
 interface ClubState {
   children: Child[];
   addChild: (c: Omit<Child, "id">) => void;
+
+  // (추후) user, sessions 등 추가
 }
 
 export const useClub = create<ClubState>(set => ({
