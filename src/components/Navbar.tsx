@@ -1,11 +1,11 @@
-import { Link, useLocation } from 'react-router-dom';
-import { SoccerBall } from 'phosphor-react';
+import { Link, useLocation } from "react-router-dom";
+import { SoccerBall } from "phosphor-react";
 
 const links = [
-  { to: '/', label: 'Home' },
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: "/children", label: "Profiles" },
-  { to: '/calendar', label: 'Calendar' }
+  { to: "/", label: "Home" },
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/calendar", label: "Calendar" },
+  { to: "/children", label: "Profiles" }
 ];
 
 export default function Navbar() {
@@ -19,7 +19,9 @@ export default function Navbar() {
           {links.map(l => (
             <li key={l.to}>
               <Link
-                className={\`\${pathname === l.to ? 'text-primary font-semibold' : ''} py-2\`}
+                className={`py-2 ${
+                  pathname === l.to ? "text-primary font-semibold" : ""
+                }`}
                 to={l.to}
               >
                 {l.label}
