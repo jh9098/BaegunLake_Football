@@ -33,7 +33,14 @@ export default function Calendar() {
         endAccessor="end"
         popup
         style={{ height: "100%" }}
-        messages={{ next: "다음", previous: "이전", month: "월", week: "주", day: "일" }}
+        messages={{
+          next: "다음",
+          previous: "이전",
+          month: "월",
+          week: "주",
+          day: "일",
+          today: "오늘"
+        }}
       />
     </section>
   );
