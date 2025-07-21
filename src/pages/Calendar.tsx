@@ -1,94 +1,103 @@
-import {
-  Calendar as RBC,
-  Views,
-  ToolbarProps
-} from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+// src/pages/Calendar.tsx
+import { useState } from "react";
+import { Calendar as RBC, Views, ToolbarProps, Event as BigCalendarEvent } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { localizer } from "../lib/calendar";
-import { useClub } from "../app/store";
-import { useState } from "react";
 import dayjs from "dayjs";
+
+// useClub 스토어와 타입을 가져옵니다.
+import { useClub, Session } from "../app/store";
+import { localizer } from "../lib/calendar";
+
 import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Calendar as CalendarIcon } from "@phosphor-icons/react"
 
 const DnDCalendar = withDragAndDrop(RBC);
 
-export default function Calendar() {
-  const { events, addEvent, moveEvent } = useClub();
-  const [slotInfo, setSlotInfo] = useState<{ start: Date; end: Date } | null>(
-    null
-  );
+// BigCalendar의 Event와 우리 Session을 매핑
+interface CalendarEvent extends BigCalendarEvent {
+  id: string;
+  place: string;
+}
 
-  /* ---------- 새 일정 저장 ---------- */
-  const handleSave = (title: string, place: string) => {
-    if (!slotInfo) return;
-    addEvent({ title, place, start: slotInfo.start, end: slotInfo.end });
-    setSlotInfo(null);
-  };
+export default function CalendarPage() {
+  const { sessions } = useClub(); // 스토어에서 sessions 데이터를 가져옵니다.
+  const [selectedEvent, setSelectedEvent] = useState<Session | null>(null);
 
-  /* ---------- 렌더 ---------- */
+  // 우리 Session 데이터를 BigCalendar가 이해하는 Event 형태로 변환
+  const formattedSessions: CalendarEvent[] = sessions.map(s => ({
+    ...s,
+    resource: s.id, // DnD를 위해 필요
+  }));
+
   return (
-    <section className="mx-auto max-w-5xl p-4 h-[80vh]">
-      <h2 className="text-xl font-semibold mb-4">훈련 일정</h2>
+    <section className="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">훈련 일정</h1>
+        <p className="text-muted-foreground">전체 훈련 및 경기 일정을 확인하고 관리하세요.</p>
+      </div>
+      <div className="h-[80vh] bg-card p-4 rounded-lg shadow-sm">
+        <DndProvider backend={HTML5Backend}>
+          <DnDCalendar
+            localizer={localizer}
+            events={formattedSessions} // 변환된 데이터를 사용
+            defaultView={Views.MONTH}
+            style={{ height: "100%" }}
+            selectable
+            popup
+            onSelectEvent={(event: BigCalendarEvent) => {
+                const session = sessions.find(s => s.id === (event as CalendarEvent).id);
+                if(session) setSelectedEvent(session);
+            }}
+            messages={{
+              next: "다음", previous: "이전", month: "월", week: "주", day: "일", today: "오늘",
+              showMore: total => `+${total}개 더보기`,
+            }}
+            eventPropGetter={(event) => ({
+              className: "bg-primary border-none text-primary-foreground p-1 rounded-md cursor-pointer",
+              title: `${event.title} @ ${ (event as CalendarEvent).place}`
+            })}
+            components={{ toolbar: CustomToolbar }}
+          />
+        </DndProvider>
+      </div>
 
-      <DndProvider backend={HTML5Backend}>
-        <DnDCalendar
-          localizer={localizer}
-          events={events}
-          defaultView={Views.MONTH}
-          style={{ height: "100%" }}
-          selectable
-          popup
-          onEventDrop={({ event, start, end }) =>
-            moveEvent(event.id as string, start, end)
-          }
-          onSelectSlot={({ start, end }) => setSlotInfo({ start, end })}
-          messages={{
-            next: "다음",
-            previous: "이전",
-            month: "월",
-            week: "주",
-            day: "일",
-            today: "오늘"
-          }}
-          eventPropGetter={() => ({
-            className: "bg-primary/80 text-white"
-          })}
-          components={{ toolbar: CustomToolbar }}
-        />
-      </DndProvider>
-
-      {slotInfo && (
-        <QuickAdd
-          slot={slotInfo}
-          onCancel={() => setSlotInfo(null)}
-          onSave={handleSave}
-        />
+      {selectedEvent && (
+        <AlertDialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                        <CalendarIcon size={24} />
+                        {selectedEvent.title}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                        <p><strong>장소:</strong> {selectedEvent.place}</p>
+                        <p><strong>시간:</strong> {dayjs(selectedEvent.start).format('M월 D일 HH:mm')} ~ {dayjs(selectedEvent.end).format('HH:mm')}</p>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction>확인</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
       )}
     </section>
   );
 }
 
-/* ---------- 커스텀 툴바 (월/주/일 토글 버튼) ---------- */
 function CustomToolbar({ label, onNavigate, onView, view }: ToolbarProps) {
   return (
-    <div className="flex justify-between items-center px-2 py-1 bg-white border rounded mb-2">
-      <div className="space-x-1">
-        <Button size="sm" variant="outline" onClick={() => onNavigate("PREV")}>
-          ←
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => onNavigate("TODAY")}>
-          오늘
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => onNavigate("NEXT")}>
-          →
-        </Button>
+    <div className="flex flex-col sm:flex-row justify-between items-center px-2 py-2 bg-card mb-2 rounded-t-md">
+      <div className="flex items-center space-x-2 mb-2 sm:mb-0">
+        <Button size="sm" variant="outline" onClick={() => onNavigate("PREV")}>←</Button>
+        <Button size="sm" variant="outline" onClick={() => onNavigate("TODAY")}>오늘</Button>
+        <Button size="sm" variant="outline" onClick={() => onNavigate("NEXT")}>→</Button>
       </div>
-      <span className="font-medium">{label}</span>
+      <span className="text-lg font-bold order-first sm:order-none mb-2 sm:mb-0">{label}</span>
       <div className="space-x-1">
         {(["month", "week", "day"] as const).map(v => (
           <Button
@@ -100,56 +109,6 @@ function CustomToolbar({ label, onNavigate, onView, view }: ToolbarProps) {
             {v === "month" ? "월" : v === "week" ? "주" : "일"}
           </Button>
         ))}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- QuickAdd 모달 (간단 구현) ---------- */
-function QuickAdd({
-  slot,
-  onSave,
-  onCancel
-}: {
-  slot: { start: Date; end: Date };
-  onSave: (title: string, place: string) => void;
-  onCancel: () => void;
-}) {
-  const [title, setTitle] = useState("");
-  const [place, setPlace] = useState("");
-  return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded shadow-lg p-4 w-80 space-y-3">
-        <h3 className="font-semibold text-lg">새 일정</h3>
-        <p className="text-sm">
-          {dayjs(slot.start).format("M/D HH:mm")} –{" "}
-          {dayjs(slot.end).format("M/D HH:mm")}
-        </p>
-        <input
-          className="w-full border rounded p-2 text-sm"
-          placeholder="제목"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-        <input
-          className="w-full border rounded p-2 text-sm"
-          placeholder="장소"
-          value={place}
-          onChange={e => setPlace(e.target.value)}
-        />
-        <div className="flex justify-end gap-2">
-          <Button size="sm" variant="outline" onClick={onCancel}>
-            취소
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => {
-              onSave(title || "훈련", place || "-");
-            }}
-          >
-            저장
-          </Button>
-        </div>
       </div>
     </div>
   );

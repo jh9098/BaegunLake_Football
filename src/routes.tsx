@@ -1,16 +1,36 @@
-import { lazy } from "react";
-import { createBrowserRouter } from "react-router-dom";
+// src/routes.tsx
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Home from "@/pages/Home";
+import Dashboard from "@/pages/Dashboard";
+import Calendar from "@/pages/Calendar";
+import Children from "@/pages/Children";
+import KakaoCallback from "@/pages/KakaoCallback";
 
-const Home = lazy(() => import("./pages/Home"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Calendar = lazy(() => import("./pages/Calendar"));
-const Children = lazy(() => import("./pages/Children"));
-const KakaoCallback = lazy(() => import("./pages/KakaoCallback"));
+function AppLayout() {
+  return (
+    <div className="relative flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
-  { path: "/dashboard", element: <Dashboard /> },
-  { path: "/calendar", element: <Calendar /> },
-  { path: "/children", element: <Children /> },
-  { path: "/oauth/kakao", element: <KakaoCallback /> }
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "calendar", element: <Calendar /> },
+      { path: "children", element: <Children /> },
+    ],
+  },
+  { 
+    path: "/auth/kakao/callback", 
+    element: <KakaoCallback /> 
+  },
 ]);

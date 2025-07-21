@@ -1,60 +1,55 @@
-/**
- * Vite 설정 – React + Tailwind + 이미지툴즈 + PWA(Service Worker + 푸시)
- */
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { imagetools } from "vite-imagetools";
 import { VitePWA } from "vite-plugin-pwa";
+import path from "path"; // resolve를 위해 path 모듈 import
 
 export default defineConfig({
   plugins: [
-    /** React 18 Fast Refresh */
     react(),
-
-    /** 이미지 리사이즈·WebP/AVIF srcset 생성 */
-    imagetools(),
-
-    /** PWA 플러그인 – Service Worker + Manifest 자동 생성 */
     VitePWA({
-      /** 'prompt' : 새 버전 발견 시 브라우저가 업데이트 배너 표시  */
-      registerType: "prompt",
-
-      /** dev 모드에서도 SW 작동하도록 */
-      devOptions: { enabled: true },
-
-      /** 웹앱 매니페스트 */
+      registerType: "autoUpdate", // 'prompt' 대신 'autoUpdate'로 변경하여 UX 개선
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: "Soccer Club",
-        short_name: "Soccer",
+        name: "백운호수 FC",
+        short_name: "백운FC",
+        description: "데이터로 증명하는 우리 아이의 성장",
+        theme_color: "#ffffff",
         icons: [
-          { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "/icon-512.png", sizes: "512x512", type: "image/png" }
-        ],
-        start_url: "/",
-        display: "standalone",
-        theme_color: "#2563eb",
-        background_color: "#ffffff"
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       },
-
-      /** Workbox 설정 – 정적 프리캐싱 + 런타임 캐시 */
       workbox: {
-        /** 빌드 산출물 중 프리캐시할 패턴 */
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,avif}"],
-
-        /** 런타임 이미지 CacheFirst */
+        // 개발 중 라우팅 오류를 줄이기 위해 런타임 캐싱을 단순화
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === "image",
             handler: "CacheFirst",
-            options: { cacheName: "images" }
-          }
-        ]
-      }
-    })
+            options: {
+              cacheName: "images-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+              },
+            },
+          },
+        ],
+      },
+    }),
   ],
-
-  /** 별칭(@ → src) – tsconfig.json paths 와 맞춰줌 */
   resolve: {
-    alias: { "@": "/src" }
-  }
+    // alias 경로를 절대 경로로 수정하여 안정성 확보
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 });
