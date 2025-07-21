@@ -4,6 +4,7 @@ import { SoccerBall } from 'phosphor-react';
 const links = [
   { to: '/', label: 'Home' },
   { to: '/dashboard', label: 'Dashboard' },
+  { to: "/children", label: "Profiles" },
   { to: '/calendar', label: 'Calendar' }
 ];
 
