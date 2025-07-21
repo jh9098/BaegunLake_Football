@@ -12,9 +12,9 @@ export interface Child {
 export interface Training {
   id: string;
   childId: string;
-  date: string;               // 'YYYY-MM-DD'
-  skill: string;              // e.g. "드리블", "패스"
-  score: number;              // 0~100
+  date: string;    // 'YYYY-MM-DD'
+  skill: string;   // "드리블"·"패스" 등
+  score: number;   // 0~100
   note?: string;
 }
 
@@ -33,22 +33,17 @@ interface ClubState {
   trainings: Training[];
 
   addChild: (c: Omit<Child, "id">) => void;
+
   addEvent: (e: Omit<EventItem, "id">) => void;
   moveEvent: (id: string, start: Date, end: Date) => void;
+
   addTraining: (t: Omit<Training, "id">) => void;
+  getTrainingsByChild: (childId: string) => Training[];
 }
 
 export const useClub = create<ClubState>(set => ({
   children: [],
-  events: [
-    {
-      id: crypto.randomUUID(),
-      title: "드리블 훈련 @A구장",
-      start: new Date(),
-      end: new Date(new Date().setHours(new Date().getHours() + 2)),
-      place: "A구장"
-    }
-  ],
+  events: [],
   trainings: [],
 
   addChild: child =>
@@ -71,5 +66,8 @@ export const useClub = create<ClubState>(set => ({
   addTraining: tr =>
     set(state => ({
       trainings: [...state.trainings, { id: crypto.randomUUID(), ...tr }]
-    }))
+    })),
+
+  getTrainingsByChild: childId =>
+    useClub.getState().trainings.filter(t => t.childId === childId)
 }));
