@@ -30,7 +30,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container mx-auto flex h-16 max-w-7xl items-center px-4">
         <Link to="/" className="flex items-center font-bold text-primary gap-2 text-xl mr-8">
           <SoccerBall size={32} weight="duotone" />
