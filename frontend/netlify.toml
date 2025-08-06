@@ -1,0 +1,20 @@
+# Netlify 빌드 설정
+[build]
+  # 프로젝트 빌드 명령어
+  command = "yarn build"
+  
+  # 빌드 결과물이 생성되는 폴더 (Vite의 기본값)
+  publish = "dist"
+  
+  # 빌드 환경 설정
+  [build.environment]
+    # 여기에 Netlify에서 사용할 환경 변수를 지정할 수 있습니다.
+    # 예: VITE_API_BASE_URL = "https://your-backend-url.onrender.com"
+    # 하지만 Netlify UI에서 설정하는 것이 더 안전하고 편리합니다.
+
+# 모든 경로 요청을 index.html로 리다이렉트하는 설정 (매우 중요!)
+# React Router와 같은 클라이언트 사이드 라우팅에 필수적입니다.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
