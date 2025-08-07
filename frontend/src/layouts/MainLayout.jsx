@@ -1,14 +1,25 @@
 import { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 
 export default function MainLayout() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, kakaoLogin, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleLogin = async () => {
+    try {
+      await kakaoLogin();
+      navigate('/dashboard');
+      closeMenu();
+    } catch (error) {
+      alert('로그인에 실패했습니다.');
+    }
+  };
 
   return (
     <div>
@@ -19,7 +30,11 @@ export default function MainLayout() {
             <Link to="/dashboard" className="text-gray-600 hover:text-brand-green">대시보드</Link>
             <Link to="/schedule" className="text-gray-600 hover:text-brand-green">훈련 일정</Link>
             <Link to="/community" className="text-gray-600 hover:text-brand-green">커뮤니티</Link>
-            {currentUser && <Button variant="secondary" onClick={logout}>로그아웃</Button>}
+            {currentUser ? (
+              <Button variant="secondary" onClick={logout}>로그아웃</Button>
+            ) : (
+              <Button onClick={handleLogin}>카카오 로그인</Button>
+            )}
           </div>
           <button
             className="md:hidden text-gray-600"
@@ -42,7 +57,7 @@ export default function MainLayout() {
           onClick={closeMenu}
         />
         <div
-          className={`fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300 p-6 space-y-4 ${
+          className={`fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300 p-6 flex flex-col ${
             isMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -53,7 +68,7 @@ export default function MainLayout() {
           >
             <X className="w-6 h-6" />
           </button>
-          <nav className="flex flex-col space-y-4">
+          <nav className="flex flex-col space-y-4 flex-1">
             <Link
               to="/dashboard"
               className="text-gray-600 hover:text-brand-green"
@@ -75,12 +90,23 @@ export default function MainLayout() {
             >
               커뮤니티
             </Link>
-            {currentUser && (
-              <Button variant="secondary" onClick={() => { logout(); closeMenu(); }}>
-                로그아웃
-              </Button>
-            )}
           </nav>
+          {currentUser ? (
+            <Button
+              variant="secondary"
+              className="mt-4 w-full"
+              onClick={() => {
+                logout();
+                closeMenu();
+              }}
+            >
+              로그아웃
+            </Button>
+          ) : (
+            <Button className="mt-4 w-full" onClick={handleLogin}>
+              카카오 로그인
+            </Button>
+          )}
         </div>
       </div>
 
