@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, CalendarDays, BarChart2, Users } from 'lucide-react';
@@ -13,17 +13,7 @@ const FeatureCard = ({ icon, title, description }) => (
 );
 
 export default function HomePage() {
-  const { currentUser, kakaoLogin, logout, loading } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    try {
-      await kakaoLogin();
-      navigate('/dashboard');
-    } catch (error) {
-      alert('로그인에 실패했습니다. 팝업 차단을 해제하고 다시 시도해주세요.');
-    }
-  };
+  const { currentUser, logout, loading } = useAuth();
   
   return (
     <div className="bg-gray-50">
@@ -38,9 +28,7 @@ export default function HomePage() {
             
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : currentUser ? (
               <Button variant="secondary" onClick={logout}>로그아웃</Button>
-            ) : (
-              <Button onClick={handleLogin}>카카오 로그인</Button>
-            )}
+            ) : null}
           </div>
         </nav>
       </header>

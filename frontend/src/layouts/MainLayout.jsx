@@ -1,25 +1,14 @@
 import { useState } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 
 export default function MainLayout() {
-  const { currentUser, kakaoLogin, logout } = useAuth();
+  const { currentUser, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
-
-  const handleLogin = async () => {
-    try {
-      await kakaoLogin();
-      navigate('/dashboard');
-      closeMenu();
-    } catch (error) {
-      alert('로그인에 실패했습니다.');
-    }
-  };
 
   return (
     <div>
@@ -32,9 +21,7 @@ export default function MainLayout() {
             <Link to="/community" className="text-gray-600 hover:text-brand-green">커뮤니티</Link>
             {currentUser ? (
               <Button variant="secondary" onClick={logout}>로그아웃</Button>
-            ) : (
-              <Button onClick={handleLogin}>카카오 로그인</Button>
-            )}
+            ) : null}
           </div>
           <button
             className="md:hidden text-gray-600"
@@ -102,11 +89,7 @@ export default function MainLayout() {
             >
               로그아웃
             </Button>
-          ) : (
-            <Button className="mt-4 w-full" onClick={handleLogin}>
-              카카오 로그인
-            </Button>
-          )}
+          ) : null}
         </div>
       </div>
 
