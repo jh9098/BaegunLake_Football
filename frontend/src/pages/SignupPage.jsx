@@ -31,6 +31,8 @@ export default function SignupPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [contact, setContact] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [children, setChildren] = useState([
@@ -96,6 +98,8 @@ export default function SignupPage() {
         email,
         username,
         displayName: username,
+        name,
+        contact,
         role: 'parent',
         children: childIds,
         createdAt: serverTimestamp(),
@@ -122,6 +126,14 @@ export default function SignupPage() {
         <div className="space-y-2">
           <Label htmlFor="username">아이디</Label>
           <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="name">이름</Label>
+          <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="contact">연락처</Label>
+          <Input id="contact" type="tel" value={contact} onChange={(e) => setContact(e.target.value)} required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">비밀번호</Label>
