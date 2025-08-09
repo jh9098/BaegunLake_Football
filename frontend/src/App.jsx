@@ -6,6 +6,7 @@ import AdminLayout from './layouts/AdminLayout';
 // Public Pages
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 // Parent Pages
 import DashboardPage from './pages/DashboardPage';
@@ -25,6 +26,7 @@ export default function App() {
         {/* Public Routes & Parent Routes (테스트용으로 제한 해제된 상태) */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
