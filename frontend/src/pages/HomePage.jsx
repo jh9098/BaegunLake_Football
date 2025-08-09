@@ -30,9 +30,20 @@ export default function HomePage() {
             <Link to="/community" className="text-gray-600 hover:text-brand-green">커뮤니티</Link>
             <Link to="/admin" className="text-gray-600 hover:text-brand-green">관리자</Link>
 
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : currentUser ? (
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : currentUser ? (
               <Button variant="secondary" onClick={logout}>로그아웃</Button>
-            ) : null}
+            ) : (
+              <>
+                <Button asChild>
+                  <Link to="/login">로그인</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/signup">회원가입</Link>
+                </Button>
+              </>
+            )}
           </div>
           <button
             className="sm:hidden text-gray-600"
@@ -81,7 +92,16 @@ export default function HomePage() {
             >
               로그아웃
             </Button>
-          ) : null}
+          ) : (
+            <div className="mt-4 w-full space-y-2">
+              <Button className="w-full" asChild>
+                <Link to="/login" onClick={closeMenu}>로그인</Link>
+              </Button>
+              <Button className="w-full" variant="outline" asChild>
+                <Link to="/signup" onClick={closeMenu}>회원가입</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

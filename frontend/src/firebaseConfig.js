@@ -1,12 +1,21 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken, signOut, onAuthStateChanged } from 'firebase/auth';
+import {
+  getAuth,
+  signInWithCustomToken,
+  signOut,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+} from 'firebase/auth';
 // ⭐️ 1. 필요한 모든 Firestore 함수들을 여기서 import 합니다.
-import { 
-  getFirestore, 
-  collection, 
-  doc, 
-  getDoc, 
-  setDoc, 
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
   serverTimestamp,
   query,
   where,
@@ -15,7 +24,7 @@ import {
   limit,
   addDoc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
 } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions, httpsCallable } from 'firebase/functions';
@@ -46,16 +55,20 @@ export {
   db, 
   storage, 
   functions,
-  
+
   // Auth 함수들
   signInWithCustomToken,
   signOut,
   onAuthStateChanged,
-  
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+
   // ⭐️ 2. 여기서 import한 모든 Firestore 함수들을 export 합니다.
   collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   serverTimestamp,
   query,
