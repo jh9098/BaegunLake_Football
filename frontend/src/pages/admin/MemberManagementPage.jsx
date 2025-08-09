@@ -65,6 +65,12 @@ const ChildFormModal = ({ child, onSave, onCancel }) => {
     const [name, setName] = useState(child?.name || '');
     const [grade, setGrade] = useState(child?.grade || '');
     const [team, setTeam] = useState(child?.team || '');
+    // 자녀 정보가 변경될 때마다 입력 폼을 최신 값으로 동기화합니다.
+    useEffect(() => {
+        setName(child?.name || '');
+        setGrade(child?.grade || '');
+        setTeam(child?.team || '');
+    }, [child]);
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSubmit = async () => {
