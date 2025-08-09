@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, UserPlus, Trash2 } from 'lucide-react';
 
@@ -65,18 +66,20 @@ const ChildFormModal = ({ child, onSave, onCancel }) => {
     const [name, setName] = useState(child?.name || '');
     const [grade, setGrade] = useState(child?.grade || '');
     const [team, setTeam] = useState(child?.team || '');
+    const [note, setNote] = useState(child?.note || '');
     // 자녀 정보가 변경될 때마다 입력 폼을 최신 값으로 동기화합니다.
     useEffect(() => {
         setName(child?.name || '');
         setGrade(child?.grade || '');
         setTeam(child?.team || '');
+        setNote(child?.note || '');
     }, [child]);
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSubmit = async () => {
         if (!name || !team) return alert('학생 이름과 팀은 필수입니다.');
         setIsSaving(true);
-        await onSave({ name, grade, team });
+        await onSave({ name, grade, team, note });
         setIsSaving(false);
     };
 
@@ -90,6 +93,7 @@ const ChildFormModal = ({ child, onSave, onCancel }) => {
                 <div><label>이름</label><Input value={name} onChange={e => setName(e.target.value)} /></div>
                 <div><label>학년</label><Input value={grade} onChange={e => setGrade(e.target.value)} placeholder="예: 초등 3학년" /></div>
                 <div><label>소속팀</label><Input value={team} onChange={e => setTeam(e.target.value)} placeholder="예: U-10"/></div>
+                <div><label>특이사항</label><Textarea value={note} onChange={e => setNote(e.target.value)} placeholder="예: 알레르기"/></div>
             </div>
             <DialogFooter>
                 <Button variant="outline" onClick={onCancel}>취소</Button>
@@ -241,14 +245,28 @@ export default function MemberManagementPage() {
         </CardHeader>
         <CardContent>
             <Table>
-                <TableHeader><TableRow><TableHead>이름</TableHead><TableHead>학년</TableHead><TableHead>소속팀</TableHead><TableHead>배정된 학부모</TableHead><TableHead className="text-right">관리</TableHead></TableRow></TableHeader>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>이름</TableHead>
+                    <TableHead>학년</TableHead>
+                    <TableHead>소속팀</TableHead>
+                    <TableHead>특이사항</TableHead>
+                    <TableHead>배정된 학부모</TableHead>
+                    <TableHead className="text-right">관리</TableHead>
+                  </TableRow>
+                </TableHeader>
                 <TableBody>
-                    {loading ? <TableRow><TableCell colSpan="5" className="text-center h-24">로딩 중...</TableCell></TableRow> :
+                    {loading ? (
+                      <TableRow>
+                        <TableCell colSpan="6" className="text-center h-24">로딩 중...</TableCell>
+                      </TableRow>
+                    ) : (
                         children.map(child => (
                             <TableRow key={child.id}>
                                 <TableCell className="font-medium">{child.name}</TableCell>
                                 <TableCell>{child.grade}</TableCell>
                                 <TableCell>{child.team}</TableCell>
+                                <TableCell>{child.note || '-'}</TableCell>
                                 <TableCell>{getParentName(child)}</TableCell>
                                 <TableCell className="text-right space-x-2">
                                   <Button variant="outline" size="sm" onClick={() => openEditChildModal(child)}>수정</Button>
@@ -258,7 +276,7 @@ export default function MemberManagementPage() {
                                 </TableCell>
                             </TableRow>
                         ))
-                    }
+                    )}
                 </TableBody>
             </Table>
         </CardContent>
