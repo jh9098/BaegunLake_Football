@@ -9,6 +9,7 @@ import {
   setDoc,
   serverTimestamp,
   collection,
+  addDoc,
   query,
   where,
   getDocs,
@@ -72,19 +73,31 @@ export default function SignupPage() {
       }
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
+
+      // 자녀 정보를 children 컬렉션에 저장하고 해당 문서 ID를 수집합니다.
+      const childIds = await Promise.all(
+        children.map(async (c) => {
+          const childDoc = await addDoc(collection(db, 'children'), {
+            name: c.name,
+            gender: c.gender,
+            age: c.age,
+            grade: c.grade,
+            note: c.note,
+            team: '',
+            attendanceStatus: '미등원',
+            createdAt: serverTimestamp(),
+          });
+          return childDoc.id;
+        })
+      );
+
       const userData = {
         uid,
         email,
         username,
         displayName: username,
         role: 'parent',
-        children: children.map((c) => ({
-          name: c.name,
-          gender: c.gender,
-          age: c.age,
-          grade: c.grade,
-          note: c.note,
-        })),
+        children: childIds,
         createdAt: serverTimestamp(),
       };
       await setDoc(doc(db, 'users', uid), userData);
