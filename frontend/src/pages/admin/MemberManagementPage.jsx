@@ -15,6 +15,8 @@ import { Loader2, UserPlus, Trash2 } from 'lucide-react';
 const EditParentModal = ({ parent, allChildren, onSave, onCancel }) => {
   const [role, setRole] = useState(parent.role);
   const [childrenIds, setChildrenIds] = useState(parent.children || []);
+  const [name, setName] = useState(parent.name || '');
+  const [contact, setContact] = useState(parent.contact || '');
 
   const handleChildToggle = (childId) => {
     setChildrenIds(prev => prev.includes(childId) ? prev.filter(id => id !== childId) : [...prev, childId]);
@@ -27,6 +29,8 @@ const EditParentModal = ({ parent, allChildren, onSave, onCancel }) => {
         <DialogDescription>회원의 역할과 배정된 자녀를 수정합니다.</DialogDescription>
       </DialogHeader>
       <div className="space-y-4 py-4">
+        <div><label>이름</label><Input value={name} onChange={e => setName(e.target.value)} /></div>
+        <div><label>연락처</label><Input value={contact} onChange={e => setContact(e.target.value)} /></div>
         <div><label>역할</label>
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger><SelectValue/></SelectTrigger>
@@ -50,7 +54,7 @@ const EditParentModal = ({ parent, allChildren, onSave, onCancel }) => {
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel}>취소</Button>
-        <Button onClick={() => onSave({ role, children: childrenIds })}>저장</Button>
+        <Button onClick={() => onSave({ name, contact, role, children: childrenIds })}>저장</Button>
       </DialogFooter>
     </DialogContent>
   );
@@ -158,7 +162,8 @@ export default function MemberManagementPage() {
 
   const getParentName = (child) => {
     const parent = parents.find(p => p.children?.includes(child.id));
-    return parent?.displayName || <span className="text-gray-400">미배정</span>;
+    if (!parent) return <span className="text-gray-400">미배정</span>;
+    return parent.name || parent.displayName;
   };
   
   const openNewChildModal = () => {
@@ -187,12 +192,24 @@ export default function MemberManagementPage() {
         </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader><TableRow><TableHead>이름</TableHead><TableHead>이메일</TableHead><TableHead>역할</TableHead><TableHead>배정된 자녀</TableHead><TableHead>관리</TableHead></TableRow></TableHeader>
+            <TableHeader>
+              <TableRow>
+                <TableHead>아이디</TableHead>
+                <TableHead>이름</TableHead>
+                <TableHead>연락처</TableHead>
+                <TableHead>이메일</TableHead>
+                <TableHead>역할</TableHead>
+                <TableHead>배정된 자녀</TableHead>
+                <TableHead>관리</TableHead>
+              </TableRow>
+            </TableHeader>
             <TableBody>
-              {loading ? <TableRow><TableCell colSpan="5" className="text-center h-24">로딩 중...</TableCell></TableRow> :
+              {loading ? <TableRow><TableCell colSpan="7" className="text-center h-24">로딩 중...</TableCell></TableRow> :
                 parents.map(parent => (
                   <TableRow key={parent.id}>
                     <TableCell className="font-medium">{parent.displayName}</TableCell>
+                    <TableCell>{parent.name || '-'}</TableCell>
+                    <TableCell>{parent.contact || '-'}</TableCell>
                     <TableCell>{parent.email}</TableCell>
                     <TableCell><Badge variant={parent.role === 'admin' ? 'destructive' : 'secondary'}>{parent.role}</Badge></TableCell>
                     <TableCell>{parent.children?.map(getChildName).join(', ') || '없음'}</TableCell>
