@@ -7,6 +7,8 @@ import AdminLayout from './layouts/AdminLayout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import CompleteProfilePage from './pages/CompleteProfilePage';
+import MyPage from './pages/MyPage';
 
 // Parent Pages
 import DashboardPage from './pages/DashboardPage';
@@ -27,11 +29,13 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/complete-profile" element={<CompleteProfilePage />} />
 
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
         
         {/* Admin Routes */}

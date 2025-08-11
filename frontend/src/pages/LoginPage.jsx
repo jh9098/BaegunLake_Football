@@ -44,8 +44,9 @@ export default function LoginPage() {
     if (code) {
       setLoadingKakao(true);
       handleKakaoRedirect(code)
-        .then(() => {
-          navigate('/dashboard');
+        .then((user) => {
+          const incomplete = !user.username || !user.name || !user.contact;
+          navigate(incomplete ? '/complete-profile' : '/dashboard');
           window.history.replaceState({}, document.title, window.location.pathname);
         })
         .catch((err) => {

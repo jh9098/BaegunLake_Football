@@ -19,6 +19,11 @@ export default function MainLayout() {
             <Link to="/dashboard" className="text-gray-600 hover:text-brand-green">대시보드</Link>
             <Link to="/schedule" className="text-gray-600 hover:text-brand-green">훈련 일정</Link>
             <Link to="/community" className="text-gray-600 hover:text-brand-green">커뮤니티</Link>
+            {currentUser && (
+              <Link to="/mypage" className="text-gray-600 hover:text-brand-green">
+                마이페이지
+              </Link>
+            )}
             {currentUser ? (
               <Button variant="secondary" onClick={logout}>로그아웃</Button>
             ) : null}
@@ -77,6 +82,15 @@ export default function MainLayout() {
             >
               커뮤니티
             </Link>
+            {currentUser && (
+              <Link
+                to="/mypage"
+                className="text-gray-600 hover:text-brand-green"
+                onClick={closeMenu}
+              >
+                마이페이지
+              </Link>
+            )}
           </nav>
           {currentUser ? (
             <Button
