@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Home, Users, Calendar, BarChart2, LogOut, Menu, X } from 'lucide-react';
+import { Home, Users, Calendar, BarChart2, CheckCircle, LogOut, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function AdminLayout() {
@@ -23,6 +23,7 @@ export default function AdminLayout() {
     { name: '회원 관리', href: '/admin/members', icon: <Users className="w-5 h-5 mr-2" /> },
     { name: '일정 관리', href: '/admin/schedule', icon: <Calendar className="w-5 h-5 mr-2" /> },
     { name: '성과 관리', href: '/admin/progress', icon: <BarChart2 className="w-5 h-5 mr-2" /> },
+    { name: '출결 관리', href: '/admin/attendance', icon: <CheckCircle className="w-5 h-5 mr-2" /> },
   ];
 
   return (
