@@ -45,7 +45,11 @@ export function AuthProvider({ children }) {
         kakaoId: profile.kakaoId,
         displayName: profile.displayName,
         email: profile.email,
-        profileImageUrl: profile.profileImageUrl,
+        // Firestore does not allow undefined field values. Some Kakao accounts
+        // may not include a profile image, so ensure we store an empty string
+        // instead of `undefined` to avoid setDoc throwing an error on first
+        // login.
+        profileImageUrl: profile.profileImageUrl ?? '',
         role: 'parent',
         children: [],
         createdAt: serverTimestamp(),
