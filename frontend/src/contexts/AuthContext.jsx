@@ -52,8 +52,11 @@ export function AuthProvider({ children }) {
       };
       await setDoc(userRef, newUser);
       setUserData(newUser);
+      return newUser;
     } else {
-      setUserData(userSnap.data());
+      const existingUser = userSnap.data();
+      setUserData(existingUser);
+      return existingUser;
     }
   };
 
