@@ -45,10 +45,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const functions = getFunctions(app, 'asia-northeast3');
 
-if (window.Kakao && !window.Kakao.isInitialized()) {
-  window.Kakao.init(import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY);
-}
-
 export { 
   app, 
   auth, 

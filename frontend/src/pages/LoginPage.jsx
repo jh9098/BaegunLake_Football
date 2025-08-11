@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { auth, signInWithEmailAndPassword } from '../firebaseConfig';
 
 export default function LoginPage() {
-  const { currentUser, kakaoLogin } = useAuth();
+  const { currentUser, kakaoLogin, handleKakaoRedirect } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,18 +38,27 @@ export default function LoginPage() {
     }
   };
 
-  const handleKakaoLogin = async () => {
-    setError(null);
-    setLoadingKakao(true);
-    try {
-      await kakaoLogin();
-      navigate('/dashboard');
-    } catch (err) {
-      console.error(err);
-      setError('로그인에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setLoadingKakao(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      setLoadingKakao(true);
+      handleKakaoRedirect(code)
+        .then(() => {
+          navigate('/dashboard');
+          window.history.replaceState({}, document.title, window.location.pathname);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError('로그인에 실패했습니다. 다시 시도해주세요.');
+        })
+        .finally(() => setLoadingKakao(false));
     }
+  }, [handleKakaoRedirect, navigate]);
+
+  const handleKakaoLogin = () => {
+    setError(null);
+    kakaoLogin();
   };
 
   return (
