@@ -20,6 +20,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import MemberManagementPage from './pages/admin/MemberManagementPage';
 import ScheduleManagementPage from './pages/admin/ScheduleManagementPage';
 import ProgressManagementPage from './pages/admin/ProgressManagementPage'; // ⭐️ 1. import 추가
+import AttendanceManagementPage from './pages/admin/AttendanceManagementPage';
 
 export default function App() {
   return (
@@ -39,11 +40,12 @@ export default function App() {
         </Route>
         
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminLayout />}> 
             <Route index element={<AdminDashboard />} />
             <Route path="members" element={<MemberManagementPage />} />
             <Route path="schedule" element={<ScheduleManagementPage />} />
             <Route path="progress" element={<ProgressManagementPage />} /> {/* ⭐️ 2. 라우트 추가 */}
+            <Route path="attendance" element={<AttendanceManagementPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

@@ -84,11 +84,19 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  const refreshUserData = async () => {
+    if (!currentUser) return;
+    const userRef = doc(db, 'users', currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    setUserData(userSnap.exists() ? userSnap.data() : null);
+  };
+
   const value = {
     currentUser,
     userData,
     kakaoLogin,
     handleKakaoRedirect,
+    refreshUserData,
     logout,
     loading,
   };

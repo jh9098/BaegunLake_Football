@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import ProfileForm from '../components/ProfileForm';
 import {
@@ -13,8 +12,7 @@ import {
 } from '../firebaseConfig';
 
 export default function MyPage() {
-  const { currentUser, userData } = useAuth();
-  const navigate = useNavigate();
+  const { currentUser, userData, refreshUserData } = useAuth();
   const [initialData, setInitialData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -83,7 +81,15 @@ export default function MyPage() {
         children: childIds,
       });
 
-      navigate('/dashboard');
+      setInitialData({
+        username,
+        name,
+        contact,
+        children: children.map((c, i) => ({ ...c, id: childIds[i] })),
+      });
+
+      await refreshUserData();
+      alert('정보가 저장되었습니다.');
     } catch (err) {
       console.error(err);
     } finally {
