@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
 /* ⭐️ 1. Tailwind CSS의 핵심 지시어. 가장 위에 있어야 합니다. */
 @tailwind base;
 @tailwind components;
@@ -57,6 +59,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Noto Sans KR', sans-serif;
   }
 }
 
