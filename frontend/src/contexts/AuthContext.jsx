@@ -15,8 +15,10 @@ export function AuthProvider({ children }) {
 
   const kakaoLogin = () => {
     return new Promise((resolve, reject) => {
-      if (!window.Kakao) return reject(new Error("Kakao SDK not loaded"));
-      
+      if (!window.Kakao || !window.Kakao.Auth || !window.Kakao.Auth.login) {
+        return reject(new Error('Kakao SDK not loaded'));
+      }
+
       window.Kakao.Auth.login({
         success: async (authObj) => {
           try {
